@@ -170,6 +170,57 @@ examples/image2.jpg,95,941,244,792
 
 It prints one line for each face that was detected. The coordinates
 reported are the top, right, bottom and left coordinates of the face (in pixels).
+
+
+On Linux use `./darknet` instead of `darknet.exe`, like this:`./darknet detector test ./cfg/coco.data ./cfg/yolov3.cfg ./yolov3.weights`
+
+* **Yolo v3** COCO - image: `darknet.exe detector test data/coco.data cfg/yolov3.cfg yolov3.weights -i 0 -thresh 0.25`
+* Output coordinates of objects: `darknet.exe detector test data/coco.data yolov3.cfg yolov3.weights -ext_output dog.jpg`
+* **Yolo v3** COCO - video: `darknet.exe detector demo data/coco.data cfg/yolov3.cfg yolov3.weights -ext_output test.mp4`
+* **Yolo v3** COCO - WebCam 0: `darknet.exe detector demo data/coco.data cfg/yolov3.cfg yolov3.weights -c 0`
+* **Yolo v3** COCO for net-videocam - Smart WebCam: `darknet.exe detector demo data/coco.data cfg/yolov3.cfg yolov3.weights http://192.168.0.80:8080/video?dummy=param.mjpg`
+* **Yolo v3 - save result to the file res.avi**: `darknet.exe detector demo data/coco.data cfg/yolov3.cfg yolov3.weights -thresh 0.25 test.mp4 -out_filename res.avi`
+* **Yolo v3 Tiny** COCO - video: `darknet.exe detector demo data/coco.data cfg/yolov3-tiny.cfg yolov3-tiny.weights test.mp4`
+* **Yolo v3 Tiny** on GPU #0: `darknet.exe detector demo data/coco.data cfg/yolov3-tiny.cfg yolov3-tiny.weights -i 0 test.mp4`
+* Alternative method Yolo v3 COCO - image: `darknet.exe detect cfg/yolov3.cfg yolov3.weights -i 0 -thresh 0.25`
+* 186 MB Yolo9000 - image: `darknet.exe detector test cfg/combine9k.data yolo9000.cfg yolo9000.weights`
+* Remeber to put data/9k.tree and data/coco9k.map under the same folder of your app if you use the cpp api to build an app
+* To process a list of images `data/train.txt` and save results of detection to `result.txt` use:                             
+    `darknet.exe detector test cfg/coco.data yolov3.cfg yolov3.weights -dont_show -ext_output < data/train.txt > result.txt`
+* To calculate anchors: `darknet.exe detector calc_anchors data/obj.data -num_of_clusters 9 -width 416 -height 416`
+* To check accuracy mAP50: `darknet.exe detector map data/obj.data yolo-obj.cfg backup\yolo-obj_7000.weights`
+
+##### For using network video-camera mjpeg-stream with any Android smartphone:
+
+1. Download for Android phone mjpeg-stream soft: IP Webcam / Smart WebCam
+
+
+    * Smart WebCam - preferably: https://play.google.com/store/apps/details?id=com.acontech.android.SmartWebCam2
+    * IP Webcam: https://play.google.com/store/apps/details?id=com.pas.webcam
+
+2. Connect your Android phone to computer by WiFi (through a WiFi-router) or USB
+3. Start Smart WebCam on your phone
+4. Replace the address below, on shown in the phone application (Smart WebCam) and launch:
+
+
+* Yolo v3 COCO-model: `darknet.exe detector demo data/coco.data yolov3.cfg yolov3.weights http://192.168.0.80:8080/video?dummy=param.mjpg -i 0`
+
+
+### How to compile on Linux:
+
+Just do `make` in the darknet directory.
+Before make, you can set such options in the `Makefile`: [link](https://github.com/AlexeyAB/darknet/blob/9c1b9a2cf6363546c152251be578a21f3c3caec6/Makefile#L1)
+* `GPU=1` to build with CUDA to accelerate by using GPU (CUDA should be in `/usr/local/cuda`)
+* `CUDNN=1` to build with cuDNN v5-v7 to accelerate training by using GPU (cuDNN should be in `/usr/local/cudnn`)
+* `CUDNN_HALF=1` to build for Tensor Cores (on Titan V / Tesla V100 / DGX-2 and later) speedup Detection 3x, Training 2x
+* `OPENCV=1` to build with OpenCV 3.x/2.4.x - allows to detect on video files and video streams from network cameras or web-cams
+* `DEBUG=1` to bould debug version of Yolo
+* `OPENMP=1` to build with OpenMP support to accelerate Yolo by using multi-core CPU
+* `LIBSO=1` to build a library `darknet.so` and binary runable file `uselib` that uses this library. Or you can try to run so `LD_LIBRARY_PATH=./:$LD_LIBRARY_PATH ./uselib test.mp4` How to use this SO-library from your own code - you can look at C++ example: https://github.com/AlexeyAB/darknet/blob/master/src/yolo_console_dll.cpp
+    or use in such a way: `LD_LIBRARY_PATH=./:$LD_LIBRARY_PATH ./uselib data/coco.names cfg/yolov3.cfg yolov3.weights test.mp4`
+
+To run Darknet on Linux use examples from this article, just use `./darknet` instead of `darknet.exe`, i.e. use this command: `./darknet detector test ./cfg/coco.data ./cfg/yolov3.cfg ./yolov3.weights`
+
  
 ##### Adjusting Tolerance / Sensitivity
 
